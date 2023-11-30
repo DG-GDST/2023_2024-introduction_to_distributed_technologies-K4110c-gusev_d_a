@@ -4,6 +4,6 @@ Course: [Introduction to distributed technologies](https://github.com/itmo-ict-f
 Year: 2023/2024
 Group: K4110c
 Author: Gusev Dmitriy Alexeevich
-Lab: Lab1
+Lab: Lab2
 Date of create: 29.11.2023
 Date of finished: 30.11.2023
