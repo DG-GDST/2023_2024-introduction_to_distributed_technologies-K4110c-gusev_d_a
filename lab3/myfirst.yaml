@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  REACT_APP_USERNAME: "DG-GDST"
+  REACT_APP_COMPANY_NAME: "ITMO"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: itdt-contained-frontend
+          image: ifilyaninitmo/itdt-contained-frontend:master
+          ports:
+          - name: container-port
+            containerPort: 3000
+          envFrom:
+            - configMapRef:
+                 name: config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: default
+  labels:
+    app: app
+spec:
+    type: LoadBalancer
+    ports:
+    - port: 8200
+      targetPort: container-port
+    selector:
+      app: app
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+spec:
+  tls:
+  - hosts:
+    - lab3.local
+    secretName: tls-secret
+  rules:
+  - host: lab3.local
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: app
+            port: 
+              number: 8200
+      
