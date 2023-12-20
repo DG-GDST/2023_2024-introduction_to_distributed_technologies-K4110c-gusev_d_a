@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  REACT_APP_USERNAME: "DG-GDST"
+  REACT_APP_COMPANY_NAME: "ITMO"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: itdt-contained-frontend
+          image: ifilyaninitmo/itdt-contained-frontend:master
+          ports:
+          - name: container-port
+            containerPort: 3000
+          envFrom:
+            - configMapRef:
+                 name: config
